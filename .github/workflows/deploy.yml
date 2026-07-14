@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - main
-env:
-  ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,6 +16,7 @@ jobs:
         with:
           workload_identity_provider: 'projects/365206252904/locations/global/workloadIdentityPools/github-pool/providers/github-provider'
           service_account: 'github-deployer-59@project-9272ed72-1204-49af-a85.iam.gserviceaccount.com'
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
       - name: 'Upload to GCS'
-        run: |-
-          gcloud storage rsync ./www gs://test-bucket-114514 --recursive
+        run: 'gcloud storage rsync ./www gs://test-bucket-114514 --recursive'
