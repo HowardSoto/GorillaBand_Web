@@ -26,10 +26,5 @@ jobs:
         run: |
           gcloud storage rsync ./www gs://test-bucket-114514 \
             --recursive \
-            --delete-unmatched-destination-objects
-
-      - name: 'Set cache-control headers'
-        run: |
-          gcloud storage objects update gs://test-bucket-114514/** \
-            --cache-control="no-cache, max-age=0" \
-            --recursive
+            --delete-unmatched-destination-objects \
+            --cache-control="no-cache, max-age=0"
