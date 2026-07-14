@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GorillaBand | 專業3D列印耳機配件</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
+            --card-border: rgba(0, 0, 0, 0.05);
+            --header-bg: rgba(255, 255, 255, 0.8);
+            --desc-color: #636e72;
+            --title-color: #2d3436;
+            --price-color: #2c3e50;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f1015;
+            --text-color: #f5f6fa;
+            --card-bg: #1a1c23;
+            --card-border: rgba(255, 255, 255, 0.08);
+            --header-bg: rgba(26, 28, 35, 0.85);
+            --desc-color: #a4b0be;
+            --title-color: #ffffff;
+            --price-color: #00cec9;
+            --shadow-color: rgba(0, 0, 0, 0.35);
+        }
+
+        /* 雙語切換顯示控制 (Bilingual Visibility Control) */
+        html[lang="zh-TW"] [lang="en"] {
+            display: none !important;
+        }
+
+        html[lang="en"] [lang="zh-TW"] {
+            display: none !important;
+        }
+
+        /* 針對行內與連結元素的特別覆蓋 */
+        html[lang="zh-TW"] span[lang="zh-TW"],
+        html[lang="zh-TW"] a[lang="zh-TW"] {
+            display: inline-block !important;
+        }
+
+        html[lang="en"] span[lang="en"],
+        html[lang="en"] a[lang="en"] {
+            display: inline-block !important;
+        }
+
+        /* 基礎設定 */
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* 1. 橫幅區塊 (Hero Section) 與背景圖設定 */
+        .hero {
+            background: url('bg.png') no-repeat center center/cover;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 深色模式：Hero 背景加上暗色遂明覆蓋層 */
+        [data-theme="dark"] .hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 0;
+            pointer-events: none;
+            transition: background 0.4s ease;
+        }
+
+        /* 確保 glass-panel 在深色覆蓋層之上 */
+        [data-theme="dark"] .glass-panel {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 2. 核心技術：Apple 風格的毛玻璃面板 (Glassmorphism) - 上方滿版 */
+        .glass-panel {
+            background-image:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 250 250' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.018'/%3E%3C/svg%3E");
+            background-blend-mode: overlay;
+            backdrop-filter: blur(32px) saturate(190%);
+            /* 提升飽和度與模糊度使背景圖穿透更顯透亮與折射質感 */
+            -webkit-backdrop-filter: blur(32px) saturate(190%);
+            border-top: 1.5px solid rgba(255, 255, 255, 0.5);
+            /* 頂部高光邊緣 */
+            border-left: 1.5px solid rgba(255, 255, 255, 0.4);
+            /* 左側高光邊緣 */
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            /* 右側暗邊 */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            /* 底部微光 */
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.45),
+                /* 內側切角高光，模擬玻璃邊緣厚度 */
+                inset 0 20px 40px rgba(255, 255, 255, 0.03),
+                /* 內置柔和折射高光 */
+                0 15px 35px rgba(0, 0, 0, 0.12);
+            /* 外層柔和投影 */
+            padding: 110px 20px;
+            /* 調整上下內邊距以呈現大器橫幅 */
+            text-align: center;
+            color: #fff;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            /* 限制波紋動畫不溢出 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+        }
+
+        /* 鼠標滑過時的雙重微光與虹光折射特效 (Iridescent Light & Specular Glow) */
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                /* High-fidelity glowing center */
+                radial-gradient(circle 200px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0.05) 50%, transparent 80%),
+                /* Vibrant iridescent colored light halo */
+                radial-gradient(circle 380px at var(--mouse-x, -999px) var(--mouse-y, -999px), rgba(0, 210, 255, 0.18) 0%, rgba(162, 155, 254, 0.14) 40%, rgba(253, 121, 168, 0.06) 75%, transparent 100%);
+            pointer-events: none;
+            z-index: 1;
+            transition: opacity 0.6s cubic-bezier(0.1, 0.8, 0.2, 1);
+            opacity: 0;
+        }
+
+        /* 玻璃對角掠影光線效果 (Specular Diagonal Sheen) */
+        .glass-panel::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08) 30%, rgba(255, 255, 255, 0.22) 50%, rgba(255, 255, 255, 0.08) 70%, transparent);
+            transform: skewX(-25deg);
+            pointer-events: none;
+            z-index: 2;
+            opacity: 0.55;
+            transition: left 0.8s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .glass-panel:hover::after {
+            left: 150%;
+        }
+
+        .glass-panel:hover::before {
+            opacity: 1;
+        }
+
+        /* 波紋動畫元素 (利用 backdrop-filter 產生毛玻璃折射波浪效果) */
+        .glass-ripple {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.15), inset 0 0 15px rgba(255, 255, 255, 0.1);
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            z-index: 2;
+            animation: glass-wave 1.4s cubic-bezier(0.1, 0.8, 0.25, 1) forwards;
+        }
+
+        /* 點擊時的加強版波紋 (衝擊波) */
+        .glass-ripple.shockwave {
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.2), inset 0 0 20px rgba(255, 255, 255, 0.1);
+            animation: glass-shockwave 1.8s cubic-bezier(0.1, 0.8, 0.2, 1) forwards;
+        }
+
+        @keyframes glass-wave {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 0.9;
+                backdrop-filter: blur(20px) brightness(1.25);
+                -webkit-backdrop-filter: blur(20px) brightness(1.25);
+            }
+
+            40% {
+                opacity: 0.6;
+                backdrop-filter: blur(22px) brightness(1.15);
+                -webkit-backdrop-filter: blur(22px) brightness(1.15);
+            }
+
+            100% {
+                width: 320px;
+                height: 320px;
+                opacity: 0;
+                backdrop-filter: blur(20px) brightness(1.0);
+                -webkit-backdrop-filter: blur(20px) brightness(1.0);
+            }
+        }
+
+        @keyframes glass-shockwave {
+            0% {
+                width: 0;
+                height: 0;
+                opacity: 1;
+                backdrop-filter: blur(20px) brightness(1.4);
+                -webkit-backdrop-filter: blur(20px) brightness(1.4);
+            }
+
+            30% {
+                opacity: 0.7;
+                backdrop-filter: blur(24px) brightness(1.2);
+                -webkit-backdrop-filter: blur(24px) brightness(1.2);
+            }
+
+            100% {
+                width: 600px;
+                height: 600px;
+                opacity: 0;
+                backdrop-filter: blur(20px) brightness(1.0);
+                -webkit-backdrop-filter: blur(20px) brightness(1.0);
+            }
+        }
+
+        .glass-content {
+            position: relative;
+            z-index: 10;
+            /* 確保內容高於波紋與微光 */
+            pointer-events: auto;
+            /* 保持文字可選取與連結可點擊 */
+            transition: transform 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform-style: preserve-3d;
+        }
+
+        .glass-panel h1 {
+            margin: 0;
+            font-size: 42px;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .glass-panel p {
+            margin-top: 15px;
+            font-size: 18px;
+            color: #fdfdfd;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 商品展示區塊 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            padding: 60px 40px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        /* 3. 動畫技術：定義滑動漸顯動畫 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 單一商品卡片設定 */
+        .product-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px var(--shadow-color);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            /* 更有彈性的回饋感 */
+
+            /* 套用進場動畫 */
+            opacity: 0;
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        /* 設定商品卡片依序浮現的延遲時間 */
+        .product-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .product-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .product-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .product-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .product-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        /* 懸停 (Hover) 時的放大特效 */
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 15px 30px var(--shadow-color);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            display: block;
+            border-bottom: 1px solid var(--card-border);
+            transition: border-color 0.4s ease;
+        }
+
+        .product-info {
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 10px;
+            color: var(--title-color);
+            transition: color 0.4s ease;
+        }
+
+        .price {
+            font-size: 20px;
+            color: var(--price-color);
+            font-weight: bold;
+            transition: color 0.4s ease;
+        }
+
+        /* 頁尾 (Footer) - 精緻毛玻璃多功能頁尾 */
+        .footer {
+            background: var(--header-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--card-border);
+            padding: 50px 20px 20px;
+            color: var(--text-color);
+            margin-top: 80px;
+            transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+        }
+
+        /* 深色模式：Footer 完全黑色背景覆蓋 */
+        [data-theme="dark"] .footer {
+            background: #080a0f;
+        }
+
+        /* 雲端架構狀態徽章 */
+        .infra-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-border);
+            border: 1px solid var(--card-border);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--desc-color);
+            transition: all 0.3s ease, color 0.4s ease, background 0.4s ease;
+            margin-bottom: 10px;
+        }
+
+        .infra-badge:hover {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: rgba(31, 64, 104, 0.2);
+            color: #1f4068;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        /* 呼吸效果的運行綠點 */
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #2ecc71;
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+            }
+
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 6px rgba(46, 204, 113, 0);
+            }
+
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(46, 204, 113, 0);
+            }
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 40px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--card-border);
+            transition: border-color 0.4s ease;
+        }
+
+        .footer-brand {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .footer-brand h3 {
+            font-size: 24px;
+            font-weight: 800;
+            margin: 0 0 15px;
+            background: linear-gradient(135deg, #1f4068 0%, #162447 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .footer-brand p {
+            font-size: 14.5px;
+            color: var(--desc-color);
+            line-height: 1.6;
+            margin: 0;
+            transition: color 0.4s ease;
+        }
+
+        .footer-links {
+            flex: 1.2;
+            min-width: 280px;
+        }
+
+        .footer-links h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 0 0 15px;
+            color: var(--title-color);
+            transition: color 0.4s ease;
+        }
+
+        .footer-channel-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-btn {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 14.5px;
+            font-weight: 600;
+            transition: all 0.3s ease, color 0.4s ease, background 0.4s ease, border-color 0.4s ease;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            color: var(--text-color);
+            background: var(--card-bg);
+        }
+
+        .footer-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--shadow-color);
+            background: var(--header-bg);
+        }
+
+        .myship-btn {
+            border-left: 4px solid #118020;
+        }
+
+        .shopee-btn {
+            border-left: 4px solid #f53d2d;
+        }
+
+        .fb-btn {
+            border-left: 4px solid #1877f2;
+        }
+
+        .shopee-note {
+            font-size: 12px;
+            color: #e67e22;
+            font-weight: normal;
+            margin-left: 8px;
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            color: var(--desc-color);
+            font-size: 13.5px;
+            transition: color 0.4s ease;
+        }
+
+        .footer-bottom p {
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .footer-container {
+                flex-direction: column;
+                gap: 30px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            /* 手機端導覽列相容調整 */
+            .nav-container {
+                flex-direction: column;
+                gap: 12px;
+                padding: 15px 10px;
+            }
+
+            .nav-menu {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+
+            .nav-controls {
+                margin-top: 5px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* 導覽列 (Navigation Bar) - 精緻毛玻璃 */
+        .navbar {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: var(--header-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--card-border);
+            box-shadow: 0 4px 20px var(--shadow-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1a1a1a;
+            text-decoration: none;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #111111 0%, #444444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease, background 0.4s ease;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.03);
+        }
+
+        /* 深色模式：LOGO 改為白色漸層 */
+        [data-theme="dark"] .nav-logo {
+            background: linear-gradient(135deg, #ffffff 0%, #a4b0be 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* 導覽列輔助控制項 */
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .font-adjuster {
+            display: flex;
+            align-items: center;
+            background: var(--card-border);
+            border-radius: 20px;
+            padding: 2px 8px;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--desc-color);
+            border: 1px solid var(--card-border);
+            white-space: nowrap;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        .font-adjuster button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--desc-color);
+            padding: 4px 8px;
+            border-radius: 50%;
+            transition: all 0.2s ease, color 0.4s ease;
+        }
+
+        .font-adjuster button:hover {
+            background: var(--header-bg);
+            color: var(--title-color);
+        }
+
+        .lang-btn {
+            background: rgba(31, 64, 104, 0.08);
+            border: 1px solid rgba(31, 64, 104, 0.15);
+            color: #1f4068;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .lang-btn:hover {
+            background: #1f4068;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(31, 64, 104, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .nav-link {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s ease;
+        }
+
+        /* 品牌下拉選單 */
+        .nav-dropdown {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .caret {
+            font-size: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-dropdown:hover .caret {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            display: block;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%) translateY(12px);
+            /* 略微調近，增加連貫感 */
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            min-width: 230px;
+            /* 調整寬度以適應所有字數 */
+            z-index: 110;
+            padding: 10px 0;
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+        }
+
+        /* 建立隱形橋樑，防止鼠標移入選單時因微小間距導致選單消失 */
+        .dropdown-menu::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 0;
+            right: 0;
+            height: 15px;
+        }
+
+        .nav-dropdown:hover .dropdown-menu {
+            opacity: 1;
+            transform: translateX(-50%) translateY(5px);
+            pointer-events: auto;
+        }
+
+        .dropdown-item {
+            display: block;
+            padding: 10px 24px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14.5px;
+            font-weight: 600;
+            transition: all 0.2s ease, color 0.4s ease;
+            text-align: left;
+            white-space: nowrap;
+            /* 避免文字折行 */
+        }
+
+        .dropdown-item:hover {
+            background: var(--card-border);
+            color: var(--title-color);
+            padding-left: 30px;
+        }
+
+        /* 品牌卡片圖片與樣式 */
+        .brand-card {
+            cursor: pointer;
+        }
+
+        .brand-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+        }
+
+        .brand-gradient-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 2px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        .brand-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(0, 0, 0, 0.3) 100%);
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+
+        .brand-card:hover .brand-overlay {
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.5) 100%);
+        }
+
+        .brand-desc {
+            font-size: 14px;
+            color: var(--desc-color);
+            line-height: 1.6;
+            margin: 10px 0 20px 0;
+            min-height: 68px;
+            text-align: left;
+            transition: color 0.4s ease;
+        }
+
+        .btn-explore {
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--title-color);
+            border-bottom: 2px solid var(--title-color);
+            padding-bottom: 2px;
+            transition: all 0.3s ease, color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .brand-card:hover .btn-explore {
+            color: #d35400;
+            border-color: #d35400;
+            padding-left: 5px;
+        }
+
+        /* 品牌詳細頁面 */
+        .brand-view-section {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 50px 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .brand-header-banner {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 45px 50px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            margin-bottom: 40px;
+            position: relative;
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        @media (max-width: 768px) {
+            .brand-header-banner {
+                padding: 30px 20px;
+            }
+        }
+
+        .btn-back {
+            background: none;
+            border: none;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--desc-color);
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            transition: all 0.2s ease, color 0.4s ease;
+        }
+
+        .btn-back:hover {
+            color: var(--title-color);
+            transform: translateX(-5px);
+        }
+
+        #brand-page-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--title-color);
+            margin: 0 0 12px 0;
+            transition: color 0.4s ease;
+        }
+
+        #brand-page-desc {
+            font-size: 16px;
+            color: var(--desc-color);
+            margin: 0;
+            line-height: 1.7;
+            transition: color 0.4s ease;
+        }
+
+
+        /* 導覽列 (Navigation Bar) - 精緻毛玻璃 */
+        .navbar {
+            position: sticky;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            background: var(--header-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--card-border);
+            box-shadow: 0 4px 20px var(--shadow-color);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .nav-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+
+        .nav-logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--title-color);
+            text-decoration: none;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #111111 0%, #444444 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: transform 0.3s ease, background 0.4s ease;
+        }
+
+        .nav-logo:hover {
+            transform: scale(1.03);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-link {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s ease, background 0.4s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--title-color);
+            background: var(--card-border);
+        }
+
+        .nav-link.active {
+            color: #fff;
+            background: #2d3436;
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        /* 深色模式：選取中的導覽項目改用高對比深色 */
+        [data-theme="dark"] .nav-link.active {
+            color: #f5f6fa;
+            background: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        /* 品牌故事區塊 */
+        .about-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+
+        .about-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 60px 50px;
+            box-shadow: 0 15px 35px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        @media (max-width: 768px) {
+            .about-card {
+                padding: 40px 20px;
+            }
+        }
+
+        .about-title {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--title-color);
+            text-align: center;
+            margin: 0 0 12px 0;
+            letter-spacing: 1px;
+            line-height: 1.4;
+            transition: color 0.4s ease;
+        }
+
+        .about-subtitle {
+            font-size: 20px;
+            font-weight: 500;
+            color: var(--desc-color);
+            text-align: center;
+            margin: 0 0 45px 0;
+            transition: color 0.4s ease;
+        }
+
+        .about-content p {
+            font-size: 16.5px;
+            line-height: 1.8;
+            color: var(--desc-color);
+            margin-bottom: 25px;
+            transition: color 0.4s ease;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 50px 0;
+        }
+
+        @media (max-width: 768px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+                margin: 40px 0;
+            }
+        }
+
+        .about-block {
+            background: var(--card-bg);
+            border-left: 4px solid var(--title-color);
+            padding: 30px;
+            border-radius: 0 16px 16px 0;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: all 0.3s ease, background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .about-block:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px var(--shadow-color);
+            background: var(--header-bg);
+        }
+
+        .about-block h3 {
+            margin: 0 0 15px 0;
+            font-size: 20px;
+            color: var(--title-color);
+            font-weight: 700;
+            transition: color 0.4s ease;
+        }
+
+        .about-block p {
+            font-size: 15px;
+            margin-bottom: 12px;
+            color: var(--desc-color);
+            line-height: 1.7;
+            transition: color 0.4s ease;
+        }
+
+        .about-block p:last-child {
+            margin-bottom: 0;
+        }
+
+        .about-philosophy {
+            margin: 50px 0;
+        }
+
+        .about-philosophy h3 {
+            font-size: 24px;
+            color: var(--title-color);
+            margin-bottom: 20px;
+            font-weight: 700;
+            text-align: center;
+            transition: color 0.4s ease;
+        }
+
+        .about-philosophy>p {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 40px auto;
+        }
+
+        .philosophy-cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .philosophy-cards {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        .p-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 35px 20px;
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .p-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px var(--shadow-color);
+            border-color: var(--title-color);
+        }
+
+        .p-icon {
+            font-size: 36px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .p-card h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 12px 0;
+            color: var(--title-color);
+            transition: color 0.4s ease;
+        }
+
+        .p-card p {
+            font-size: 14px;
+            color: var(--desc-color);
+            margin: 0;
+            line-height: 1.6;
+            transition: color 0.4s ease;
+        }
+
+        .about-footer-quote {
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+            padding-top: 40px;
+            margin-top: 50px;
+        }
+
+        .about-footer-quote p {
+            max-width: 800px;
+            margin: 0 auto 20px auto;
+            color: var(--desc-color);
+            transition: color 0.4s ease;
+        }
+
+        .about-footer-quote .highlight-quote {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--title-color);
+            background: linear-gradient(120deg, rgba(255, 221, 0, 0.15) 0%, rgba(255, 221, 0, 0.15) 100%);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 8px;
+            transition: color 0.4s ease;
+        }
+
+        /* 條款與政策頁面 (Policy Section Style) */
+        .policy-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 70vh;
+        }
+
+        .policy-container {
+            display: flex;
+            gap: 40px;
+            align-items: flex-start;
+        }
+
+        .policy-sidebar {
+            flex: 1;
+            min-width: 250px;
+            position: sticky;
+            top: 100px;
+            background: var(--header-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .policy-tab-btn {
+            background: transparent;
+            border: none;
+            text-align: left;
+            padding: 12px 16px;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--desc-color);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: color 0.4s ease, background 0.3s ease;
+            transition: all 0.3s ease;
+        }
+
+        .policy-tab-btn:hover {
+            background: var(--card-border);
+            color: var(--title-color);
+        }
+
+        .policy-tab-btn.active {
+            background: #1f4068;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(31, 64, 104, 0.2);
+        }
+
+        .btn-back-to-home {
+            background: transparent;
+            border: 1px solid var(--card-border);
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-color);
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease, color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .btn-back-to-home:hover {
+            background: var(--card-border);
+            border-color: var(--card-border);
+        }
+
+        .policy-content {
+            flex: 3;
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            border: 1px solid var(--card-border);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .policy-pane h2 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0 0 30px;
+            color: var(--title-color);
+            border-bottom: 2px solid var(--card-border);
+            padding-bottom: 15px;
+            transition: color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .policy-pane h3 {
+            font-size: 19px;
+            font-weight: 700;
+            margin: 30px 0 15px;
+            color: var(--title-color);
+            transition: color 0.4s ease;
+        }
+
+        .policy-pane h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin: 20px 0 10px;
+            color: var(--title-color);
+            border-left: 3px solid #1f4068;
+            padding-left: 10px;
+            transition: color 0.4s ease;
+        }
+
+        .policy-pane p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--desc-color);
+            margin-bottom: 15px;
+            transition: color 0.4s ease;
+        }
+
+        .policy-pane ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .policy-pane li {
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--desc-color);
+            margin-bottom: 8px;
+            transition: color 0.4s ease;
+        }
+
+        .footer-policy-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .footer-policy-links a {
+            color: var(--desc-color);
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-policy-links a:hover {
+            color: var(--title-color);
+        }
+
+        @media (max-width: 768px) {
+            .policy-container {
+                flex-direction: column;
+            }
+
+            .policy-sidebar {
+                position: relative;
+                top: 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .policy-content {
+                padding: 25px;
+            }
+        }
+
+        /* 黑夜/一般模式切換按鈕 */
+        .theme-toggle-btn {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 24px var(--shadow-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .theme-toggle-btn:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: 0 12px 30px var(--shadow-color);
+        }
+
+        .theme-toggle-btn svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--text-color);
+            transition: fill 0.3s ease;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Sticky Navigation Bar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo" id="logo-link">GorillaBand</a>
+            <nav class="nav-menu">
+                <a href="#home" class="nav-link active" id="btn-home">
+                    <span lang="zh-TW">商品專區</span>
+                    <span lang="en">Products</span>
+                </a>
+
+                <!-- 品牌下拉選單 -->
+                <div class="nav-dropdown">
+                    <a class="nav-link dropdown-toggle" id="btn-brands">
+                        <span lang="zh-TW">品牌系列</span>
+                        <span lang="en">Brands</span>
+                        <span class="caret">▼</span>
+                    </a>
+                    <div class="dropdown-menu">
+                        <a href="#brand/sennheiser" class="dropdown-item" data-brand="sennheiser">
+                            <span lang="zh-TW">Sennheiser 森海塞爾</span>
+                            <span lang="en">Sennheiser</span>
+                        </a>
+                        <a href="#brand/grado" class="dropdown-item" data-brand="grado">Grado</a>
+                        <a href="#brand/sony" class="dropdown-item" data-brand="sony">
+                            <span lang="zh-TW">Sony 索尼</span>
+                            <span lang="en">Sony</span>
+                        </a>
+                        <a href="#brand/audiotechnica" class="dropdown-item" data-brand="audiotechnica">
+                            <span lang="zh-TW">Audio-Technica 鐵三角</span>
+                            <span lang="en">Audio-Technica</span>
+                        </a>
+                        <a href="#brand/tago" class="dropdown-item" data-brand="tago">TAGO</a>
+                        <a href="#brand/beyerdynamic" class="dropdown-item" data-brand="beyerdynamic">
+                            <span lang="zh-TW">Beyerdynamic 拜耳</span>
+                            <span lang="en">Beyerdynamic</span>
+                        </a>
+                        <a href="#brand/final" class="dropdown-item" data-brand="final">Final</a>
+                        <a href="#brand/audeze" class="dropdown-item" data-brand="audeze">Audeze</a>
+                    </div>
+                </div>
+
+                <a href="#about" class="nav-link" id="btn-about">
+                    <span lang="zh-TW">品牌故事</span>
+                    <span lang="en">Brand Story</span>
+                </a>
+            </nav>
+
+    </header>
+
+    <div class="hero">
+        <div class="glass-panel" id="hero-glass">
+            <div class="glass-content">
+                <h1>GorillaBand</h1>
+                <p lang="zh-TW">專為發燒友打造的 3D 列印人體工學升級配件</p>
+                <p lang="en">Premium 3D-Printed Ergonomic Upgrade Accessories Crafted for Audiophiles</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 首頁品牌分類格 -->
+    <div class="gallery" id="brand-grid">
+        <div class="product-card brand-card" data-brand="sennheiser">
+            <div class="brand-image-wrapper">
+                <img src="hd600_band.jpg" alt="Sennheiser 森海塞爾" class="product-image">
+                <div class="brand-overlay"></div>
+            </div>
+            <div class="product-info">
+                <h2 class="product-title" lang="zh-TW">Sennheiser 森海塞爾</h2>
+                <h2 class="product-title" lang="en">Sennheiser</h2>
+                <p class="brand-desc" lang="zh-TW">為 HD800 / HD800S / HD820 及 HD600 系列高階發燒機型打造的釋壓頭帶。</p>
+                <p class="brand-desc" lang="en">Ergonomic decompression headbands tailored for flagship HD800 and HD600
+                    series.</p>
+                <span class="btn-explore" lang="zh-TW">瀏覽升級配件 →</span>
+                <span class="btn-explore" lang="en">Explore Upgrades →</span>
+            </div>
+        </div>
+
+        <div class="product-card brand-card" data-brand="grado">
+            <div class="brand-image-wrapper">
+                <img src="grado_series.jpg" alt="Grado" class="product-image">
+                <div class="brand-overlay"></div>
+            </div>
+            <div class="product-info">
+                <h2 class="product-title">Grado</h2>
+                <p class="brand-desc" lang="zh-TW">為 Grado 經典復古耳機量身打造之輕量化蜂巢式排汗減壓頭戴系統。</p>
+                <p class="brand-desc" lang="en">Lightweight honeycomb sweat-wicking decompression system custom-tailored
+                    for Grado retro cups.</p>
+                <span class="btn-explore" lang="zh-TW">瀏覽升級配件 →</span>
+                <span class="btn-explore" lang="en">Explore Upgrades →</span>
+            </div>
+        </div>
+
+        <div class="product-card brand-card" data-brand="audiotechnica">
+            <div class="brand-image-wrapper">
+                <img src="adx5000.jpg" alt="Audio-Technica 鐵三角" class="product-image">
+                <div class="brand-overlay"></div>
+            </div>
+            <div class="product-info">
+                <h2 class="product-title" lang="zh-TW">Audio-Technica 鐵三角</h2>
+                <h2 class="product-title" lang="en">Audio-Technica</h2>
+                <p class="brand-desc" lang="zh-TW">專為鐵三角 ADX5000 / 3000 旗艦級耳機設計的精密人體工學減壓頭樑套件。</p>
+                <p class="brand-desc" lang="en">Precision ergonomic decompression kits designed for flagship
+                    Audio-Technica ADX5000 / 3000.</p>
+                <span class="btn-explore" lang="zh-TW">瀏覽升級配件 →</span>
+                <span class="btn-explore" lang="en">Explore Upgrades →</span>
+            </div>
+        </div>
+
+        <div class="product-card brand-card" data-brand="sony">
+            <div class="brand-image-wrapper">
+                <img src="SonyZ7.png" alt="Sony 索尼" class="product-image">
+                <div class="brand-overlay"></div>
+            </div>
+            <div class="product-info">
+                <h2 class="product-title" lang="zh-TW">Sony 索尼</h2>
+                <h2 class="product-title" lang="en">Sony</h2>
+                <p class="brand-desc" lang="zh-TW">針對 Sony Z7 / Z7M2 / MDR-Z1R 等高階旗艦大耳罩耳機開發之專業釋壓結構。</p>
+                <p class="brand-desc" lang="en">Professional weight distribution upgrades for Sony Z7 / Z7M2 / MDR-Z1R
+                    flagship headphones.</p>
+                <span class="btn-explore" lang="zh-TW">瀏覽升級配件 →</span>
+                <span class="btn-explore" lang="en">Explore Upgrades →</span>
+            </div>
+        </div>
+
+        <div class="product-card brand-card" data-brand="tago">
+            <div class="brand-image-wrapper">
+                <div class="brand-gradient-placeholder"
+                    style="background: linear-gradient(135deg, #100e17 0%, #322f3d 100%);">
+                    <span>TAGO</span>
+                </div>
+                <div class="brand-overlay"></div>
+            </div>
+            <div class="product-info">
+                <h2 class="product-title">TAGO</h2>
+                <p class="brand-desc" lang="zh-TW">專為日系職人監聽耳機 TAGO T3-01 / T3-03 打造之 3D 精密減重釋壓頭戴護墊。</p>
+                <p class="brand-desc" lang="en">3D precision shock-absorbing head cushions designed for TAGO T3-01 &
+                    T3-03 monitors.</p>
+                <span class="btn-explore" lang="zh-TW">瀏覽升級配件 →</span>
+                <span class="btn-explore" lang="en">Explore Upgrades →</span>
+            </div>
+        </div>
+
+        <div class="product-card brand-card" data-brand="beyerdynamic">
+            <div class="brand-image-wrapper">
+                <div class="brand-gradient-placeholder"
+                    style="background: linear-gradient(135deg, #2d3436 0%, #000000 100%);">
+                    <span>BEYERDYNAMIC</span>
+                </div>
+                <div class="brand-overlay"></div>
+            </div>
+            <div class="product-info">
+                <h2 class="product-title" lang="zh-TW">Beyerdynamic 拜耳</h2>
+                <h2 class="product-title" lang="en">Beyerdynamic</h2>
+                <p class="brand-desc" lang="zh-TW">德國經典監聽 DT 系列（DT770 / DT880 / DT990）專用防滑釋壓緩衝頭帶。</p>
+                <p class="brand-desc" lang="en">Non-slip decompression buffer bands for German classic DT770 / DT880 /
+                    DT990 monitors.</p>
+                <span class="btn-explore" lang="zh-TW">瀏覽升級配件 →</span>
+                <span class="btn-explore" lang="en">Explore Upgrades →</span>
+            </div>
+        </div>
+
+        <div class="product-card brand-card" data-brand="final">
+            <div class="brand-image-wrapper">
+                <div class="brand-gradient-placeholder"
+                    style="background: linear-gradient(135deg, #7f00ff 0%, #e100ff 100%);">
+                    <span>FINAL</span>
+                </div>
+                <div class="brand-overlay"></div>
+            </div>
+            <div class="product-info">
+                <h2 class="product-title">Final</h2>
+                <p class="brand-desc" lang="zh-TW">為 Final D / DX 旗艦系列平板耳機專門開發之工學分散重力分壓套件。</p>
+                <p class="brand-desc" lang="en">Planar gravity distribution pads developed specifically for Final D / DX
+                    flagship cups.</p>
+                <span class="btn-explore" lang="zh-TW">瀏覽升級配件 →</span>
+                <span class="btn-explore" lang="en">Explore Upgrades →</span>
+            </div>
+        </div>
+
+        <div class="product-card brand-card" data-brand="audeze">
+            <div class="brand-image-wrapper">
+                <div class="brand-gradient-placeholder"
+                    style="background: linear-gradient(135deg, #00cec9 0%, #0984e3 100%);">
+                    <span>AUDEZE</span>
+                </div>
+                <div class="brand-overlay"></div>
+            </div>
+            <div class="product-info">
+                <h2 class="product-title">Audeze</h2>
+                <p class="brand-desc" lang="zh-TW">針對 Audeze LCD 系列重量級平板耳機開發之專業釋壓替換頭樑系統。</p>
+                <p class="brand-desc" lang="en">Professional pressure-relief replacement headband systems for Audeze LCD
+                    planars.</p>
+                <span class="btn-explore" lang="zh-TW">瀏覽升級配件 →</span>
+                <span class="btn-explore" lang="en">Explore Upgrades →</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 品牌商品專屬頁面 (動態載入) -->
+    <div id="brand-view-section" class="brand-view-section" style="display: none;">
+        <div class="brand-header-banner">
+            <button class="btn-back" id="btn-back-to-brands">← 返回品牌列表</button>
+            <h1 id="brand-page-title">品牌 減壓升級系列</h1>
+            <p id="brand-page-desc">載入中...</p>
+        </div>
+        <div class="gallery" id="brand-products-grid">
+            <!-- 由 JavaScript 動態生成產品 -->
+        </div>
+    </div>
+
+    <!-- GorillaBand 創立介紹頁面 (品牌故事) -->
+
+    <div id="about-section" class="about-section" style="display: none;">
+        <div class="about-card" lang="zh-TW">
+            <h1 class="about-title">聽覺的極致，不該由身體來妥協</h1>
+            <h2 class="about-subtitle">—— GorillaBand 大猩猩樂團耳機頭帶的誕生</h2>
+
+            <div class="about-content">
+                <p>對於熱愛音樂的發燒友，或是需要長時間沉浸在工作狀態中的人來說，戴上耳機，就像是切換到另一個專屬的時空。然而，每一位追求高保真音質的人，大概都經歷過一種難以言喻的矛盾：聲音越是迷人，頭頂的壓迫感卻越是令人分心。
+                </p>
+
+                <div class="about-grid">
+                    <div class="about-block">
+                        <h3>痛點：當天籟之音變成頭頂的重擔</h3>
+                        <p>市面上的經典耳機，往往在聲學工程上做到了極致，但在人體工學的配戴體驗上卻總有些差強人意。</p>
+                        <p>在無數個盯著螢幕進行視覺設計與 3D
+                            建模的深夜裡，音樂是支撐精神的最佳伴侶。但隨著配戴時間拉長，傳統耳機的重量往往只集中在頭帶的狹窄區域。這種「單點壓迫」隨著時間推移，會從微小的不適感，逐漸放大成頭頂難以忍受的疲勞甚至疼痛。為了舒緩頭頂的壓力，我們只能不斷挪動耳機位置，甚至不得不中斷聆聽，讓頭部稍作休息。
+                        </p>
+                        <p>這不禁讓人思考：難道追求極致的聽覺享受，就必須忍受頭頂上的沉重負擔嗎？</p>
+                    </div>
+
+                    <div class="about-block">
+                        <h3>轉機：用設計與科技，奪回配戴的舒適權</h3>
+                        <p>既然市面上找不到完美的解決方案，那就自己動手創造。</p>
+                        <p>憑藉著對數位藝術與 3D 建模的專業背景，我們決定從人體工學的角度重新解構耳機重量的分配方式。透過無數次的曲面建模推演，並導入 3D
+                            列印技術將概念化為現實，一段尋找「完美舒適度」的研發之旅就此展開。</p>
+                        <p>要解決頭頂壓迫的問題，核心在於「分散重量」與「擴大接觸面積」。這並非一蹴可幾的過程。透過反覆測試各種 3D
+                            列印線材的物理特性，我們將具備優異柔韌性與緩衝能力的材質應用於接觸面，並透過精密的網格與結構設計，打造出能夠完美貼合頭部曲線、將單點壓力均勻釋放到整個頭頂的減壓頭帶。</p>
+                    </div>
+                </div>
+
+                <div class="about-philosophy">
+                    <h3>理念：GorillaBand 的誕生</h3>
+                    <p><strong>「GorillaBand 大猩猩樂團」</strong> 這個品牌名稱由此誕生。它象徵著如大猩猩般強悍、穩固的結構支撐，同時又具備著能溫柔包覆頭部、化解壓力的細膩設計。</p>
+                    <p>我們相信，優質的硬體設備不該成為身體的負擔。GorillaBand 的創立理念非常純粹：</p>
+
+                    <div class="philosophy-cards">
+                        <div class="p-card">
+                            <div class="p-icon">🛡️</div>
+                            <h4>無感配戴</h4>
+                            <p>透過精準的 3D 列印工藝與人體工學設計，完美分散頭頂重量，消除局部壓迫的疼痛感。</p>
+                        </div>
+                        <div class="p-card">
+                            <div class="p-icon">❤️</div>
+                            <h4>延續熱愛</h4>
+                            <p>讓每一位發燒友與重度使用者，都能無痛、無壓地長時間沉浸在自己熱愛的聲音中。</p>
+                        </div>
+                        <div class="p-card">
+                            <div class="p-icon">🔄</div>
+                            <h4>專屬升級</h4>
+                            <p>讓家中的每一副好耳機，都能擺脫「好聽但難戴」的遺憾，獲得配戴體驗的重生。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-footer-quote">
+                    <p>從日常頭頂的壓迫感中萌芽，在 3D 列印的層層堆疊中成型。GorillaBand 不僅僅是一個耳機配件，它是一份對完美聆聽體驗的堅持。</p>
+                    <p class="highlight-quote">現在，戴上你的耳機，把重量交給 GorillaBand，把專注力還給音樂本身。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 英文版 -->
+
+    </div>
+
+    <!-- 條款與政策頁面 -->
+    <div id="policy-section" class="policy-section" style="display: none;">
+        <div class="policy-container">
+            <div class="policy-sidebar">
+                <button class="policy-tab-btn" data-tab="copyright">
+                    <span lang="zh-TW">免責與版權聲明</span>
+                    <span lang="en">Disclaimer & Copyright</span>
+                </button>
+                <button class="policy-tab-btn" data-tab="refund">
+                    <span lang="zh-TW">退換貨與退款政策</span>
+                    <span lang="en">Refund Policy</span>
+                </button>
+                <button class="policy-tab-btn" data-tab="shipping">
+                    <span lang="zh-TW">運送與出貨政策</span>
+                    <span lang="en">Shipping Policy</span>
+                </button>
+                <button class="policy-tab-btn" data-tab="privacy">
+                    <span lang="zh-TW">隱私權政策與服務條款</span>
+                    <span lang="en">Privacy & ToS</span>
+                </button>
+                <button class="btn-back-to-home" id="btn-policy-back">
+                    <span lang="zh-TW">← 返回首頁</span>
+                    <span lang="en">← Back to Home</span>
+                </button>
+            </div>
+
+            <!-- 右側內容區 -->
+            <div class="policy-content">
+                <div class="policy-pane" id="pane-copyright" style="display: none;">
+                    <div lang="zh-TW">
+                        <h2>免責與版權聲明</h2>
+
+                        <h3>版權聲明</h3>
+                        <p>© 2026 GorillaBand 大猩猩樂團. 保留所有權利。本網站上所有內容（包括但不限於文字、商標、圖像、設計圖樣及 3D 建模結構）均為
+                            GorillaBand
+                            之財產，未經書面許可，不得以任何形式複製、修改或傳播。</p>
+
+                        <h3>免責與使用聲明</h3>
+
+                        <h4>3D 列印製程與外觀說明</h4>
+                        <p>GorillaBand 產品皆採用專業級 3D 列印技術（如 FDM 技術）與優質線材（如 TPU、PETG 等）製造。由於 3D
+                            列印的工藝特性，產品表面可能會有些許微小的層線、堆疊痕跡或極細微的氣孔，此為製造過程中的正常物理現象，並非產品瑕疵，亦不影響結構強度與人體工學減壓效果。</p>
+
+                        <h4>耳機相容性與安裝責任</h4>
+                        <p>本品牌所生產之減壓頭帶及配件，旨在改善特定型號耳機之配戴舒適度。消費者於購買前，請務必確認您的耳機型號與本產品之相容規格。</p>
+                        <p>安裝本產品時，請務必參考官方提供的安裝引導或說明。因消費者自行安裝不當、過度施力、拆卸程序錯誤，或使用不當外力，進而導致消費者之原廠耳機本體、線材或配件產生刮傷、變形、破損等任何形式之損傷，GorillaBand
+                            恕不承擔任何法律與損害賠償責任。</p>
+
+                        <h4>商標免責聲明</h4>
+                        <p>本網站中所提及、標示或引用的所有第三方耳機品牌名稱（例如：Sennheiser、Grado
+                            等）與產品型號，其商標及智慧財產權皆屬於各該原創廠商品牌所有。本網站提及之目的僅作為商品相容性與適用型號之說明與導覽，並不代表 GorillaBand
+                            與該等品牌有任何官方授權、代理、贊助或聯名關係。</p>
+
+                        <h4>材質與存放注意事項</h4>
+                        <p>本產品所使用之材料具有一定彈性與耐用度，但請避免將產品長期暴露於極高溫（如夏季曝曬之車內）、強烈紫外線或強酸鹼環境中，以防止材料變形或加速老化。</p>
+                    </div>
+                    <div lang="en">
+                        <h2>Disclaimer & Copyright</h2>
+
+                        <h3>Copyright Notice</h3>
+                        <p>© 2026 GorillaBand. All rights reserved. All content on this website (including
+                            but not limited to text, trademarks, images, design graphics, and 3D modeling
+                            structures) is the property of GorillaBand and may not be reproduced, modified,
+                            or distributed in any form without written permission.</p>
+
+                        <h3>Disclaimer & Usage Agreement</h3>
+
+                        <h4>3D Printing Process & Aesthetics</h4>
+                        <p>GorillaBand products are manufactured using professional-grade 3D printing
+                            technologies (such as FDM) and premium materials (such as TPU, PETG). Due to the
+                            nature of 3D printing, products may display minor layer lines, stacking marks,
+                            or minute pores. These are normal physical phenomena inherent to the
+                            manufacturing process, not defects, and do not compromise structural integrity
+                            or decompression effectiveness.</p>
+
+                        <h4>Headphone Compatibility & Installation Liability</h4>
+                        <p>Our decompression bands are designed to improve wearing comfort for specific
+                            headphone models. Customers must verify model compatibility before purchasing.
+                        </p>
+                        <p>Please follow official installation guides carefully when mounting the product.
+                            GorillaBand assumes no liability for scratches, deformation, breaks, or any
+                            damage to the customer's original headphones, cables, or accessories resulting
+                            from improper installation, excessive force, incorrect removal, or external
+                            stress.</p>
+
+                        <h4>Trademark Disclaimer</h4>
+                        <p>All third-party brand names (e.g. Sennheiser, Grado) and product models mentioned
+                            on this website belong to their respective trademark holders. Reference to these
+                            brands is solely for indicating product compatibility and does not imply any
+                            official affiliation, authorization, sponsorship, or licensing between
+                            GorillaBand and the trademark holders.</p>
+
+                        <h4>Material Storage & Care</h4>
+                        <p>The materials used possess durability and elasticity. However, please avoid
+                            prolonged exposure to extreme temperatures (such as inside hot vehicles during
+                            summer), strong UV light, or corrosive environments to prevent warping or
+                            accelerated aging.</p>
+                    </div>
+                </div>
+
+                <!-- 退換貨與退款政策 -->
+
+                <div class="policy-pane" id="pane-refund" style="display: none;">
+                    <div lang="zh-TW">
+                        <h2>退換貨與退款政策</h2>
+
+                        <h3>1. 七天鑑賞期規範</h3>
+                        <p>GorillaBand 遵守消費者保護法相關規定，提供商品到貨次日起算七天之鑑賞期（猶豫期）權益。</p>
+                        <p><strong>請特別注意：鑑賞期並非「試用期」。</strong>
+                            本產品（減壓頭帶與相關配件）為會直接接觸人體頭部與毛髮之貼身用品，基於個人衛生安全考量，商品一經拆封、安裝或試戴，即無法恢復原狀，除商品本身具備結構性瑕疵外，恕不接受退換貨。
+                        </p>
+
+                        <h3>2. 退換貨受理條件</h3>
+                        <p>若您需要辦理退貨，請確保商品符合以下條件：</p>
+                        <ul>
+                            <li>商品必須處於全新未經使用、未安裝的狀態。</li>
+                            <li>包含所有原廠包裝（外盒、緩衝材、說明書等）且包裝完整無損。</li>
+                            <li>若為專屬客製化商品（如指定特殊顏色、特殊尺寸規格之訂製款），依法不適用七天鑑賞期，除商品本身具備嚴重瑕疵外，恕不受理退換貨。</li>
+                        </ul>
+
+                        <h3>3. 新品瑕疵與運送損壞處理</h3>
+                        <p>出貨前我們皆會進行嚴格的品質檢驗。如您在收到商品時，發現結構斷裂、嚴重變形或運送過程中造成的損壞（不包含免責聲明中提及的 3D 列印正常層線與微小氣孔）：</p>
+                        <ul>
+                            <li>請於收到商品後 3 日內，將瑕疵部位清晰拍照，並連同您的「訂單編號」傳送至我們的客服信箱或官方社群訊息。</li>
+                            <li>經團隊確認為非人為瑕疵後，我們將無條件為您安排換貨或補寄，並由 GorillaBand 承擔來回運費。</li>
+                        </ul>
+
+                        <h3>4. 退換貨流程與退款</h3>
+                        <p><strong>申請方式：</strong> 請透過官方客服管道提出退貨申請，我們將提供您詳細的退貨寄送資訊。未經聯繫自行寄回的包裹，恕無法受理。</p>
+                        <p><strong>退貨運費：</strong> 若因個人因素（如買錯型號、改變心意）辦理退貨，退回之運費需由消費者自行負擔。</p>
+                        <p><strong>退款作業：</strong> 我們在收到退回商品並確認其狀態完整無損後，將於 7 至 14 個工作天內，依您原先的付款方式進行退款。</p>
+                    </div>
+                    <div lang="en">
+                        <h2>Return & Refund Policy</h2>
+
+                        <h3>1. Seven-Day Evaluation Window</h3>
+                        <p>GorillaBand complies with consumer protection laws by offering a 7-day evaluation
+                            window starting the day after delivery.</p>
+                        <p><strong>Note: The evaluation window is not a trial period.</strong> As
+                            decompression bands directly contact the hair and skin, they are classified as
+                            personal hygiene products. Once opened, installed, or tried on, the products
+                            cannot be returned unless there is an inherent structural manufacturing defect.
+                        </p>
+
+                        <h3>2. Return Requirements</h3>
+                        <p>For a return to be accepted, ensure the following conditions are met:</p>
+                        <ul>
+                            <li>The item must be completely new, unused, and uninstalled.</li>
+                            <li>Original packaging (boxes, cushion materials, manuals) must be fully intact.
+                            </li>
+                            <li>Customized products (such as items in custom colors or sizes) are exempt
+                                from the 7-day return policy and cannot be returned unless there is a severe
+                                defect.</li>
+                        </ul>
+
+                        <h3>3. Defective Goods & Shipping Damage</h3>
+                        <p>We perform rigorous QC inspections before dispatch. If your package arrives with
+                            structural breaks, severe warping, or shipping damage (excluding normal 3D
+                            printing layers and pores described in the disclaimer):</p>
+                        <ul>
+                            <li>Please send clear photos of the defect along with your Order ID to our
+                                support channels within 3 days of receipt.</li>
+                            <li>Once verified, we will arrange a replacement or refund and cover all
+                                shipping costs.</li>
+                        </ul>
+
+                        <h3>4. Return & Refund Process</h3>
+                        <p><strong>How to Apply:</strong> Contact customer support to apply for a return. We
+                            will provide shipping instructions. Unauthorised returns will not be processed.
+                        </p>
+                        <p><strong>Return Shipping:</strong> Shipping fees for returns based on personal
+                            reasons (e.g., wrong model, change of mind) are the sole responsibility of the
+                            customer.</p>
+                        <p><strong>Refund Issuance:</strong> Once we receive and verify the returned items
+                            are intact, refunds will be processed to your original payment method within 7
+                            to 14 business days.</p>
+                    </div>
+                </div>
+
+                <!-- 運送與出貨政策 -->
+
+                <div class="policy-pane" id="pane-shipping" style="display: none;">
+                    <div lang="zh-TW">
+                        <h2>運送與出貨政策</h2>
+
+                        <h3>1. 備貨與出貨時間 </h3>
+                        <p><strong>現貨供應與品質把關：</strong> GorillaBand
+                            減壓頭帶目前皆備有現貨庫存。為了確保每一件交到您手上的產品都維持最佳狀態，出貨前我們仍會進行最終的結構檢視與仔細包裝。</p>
+                        <p><strong>備貨天數：</strong> 訂單成立並完成付款後，我們將於 <strong>7
+                                日內（含假日）</strong>完成備貨與出貨作業。若遇訂單量較大、特殊節日或庫存臨時售罄需要補印，出貨時間將另行公告或以信件通知。感謝您的耐心等待。
+                        </p>
+
+                        <h3>2. 運送方式與時效</h3>
+                        <p>商品完成品管包裝並寄出後，運送時間將依您選擇的物流方式而定：</p>
+                        <ul>
+                            <li><strong>超商取貨（7-11 / 全家）：</strong> 寄出後約 2 至 3
+                                天送達指定門市。屆時系統將發送簡訊通知，請務必於期限內前往取件。</li>
+                            <li><strong>宅配到府：</strong> 寄出後約 1 至 2 個工作天送達（偏遠地區依物流公司實際配送時間為準）。</li>
+                        </ul>
+
+                        <h3>3. 訂單追蹤與通知</h3>
+                        <p>當您的包裹順利出貨後，系統將自動發送「出貨通知」至您的電子信箱或訂單通訊中。您可利用信件中的物流追蹤碼，至對應的物流公司網站查詢包裹最新動態。</p>
+
+                        <h3>4. 無法順利投遞之處理</h3>
+                        <p>若因消費者提供的收件資訊錯誤、或逾期未至超商取件導致包裹退回，消費者需自行負擔再次寄送之物流費用。我們將於收到補匯之運費後，再次為您安排寄出。</p>
+
+                        <h3>5. 國際運送</h3>
+                        <p>目前 GorillaBand
+                            官方網站之直接結帳服務僅開放台灣本島與離島地區。若您為海外發燒友，並希望訂購我們的產品，請先透過官方客服或社群平台與我們聯繫，我們將為您專案評估運費與配送方式。
+                        </p>
+                    </div>
+                    <div lang="en">
+                        <h2>Shipping & Dispatch Policy</h2>
+
+                        <h3>1. Preparation & Dispatch Time</h3>
+                        <p><strong>Stock Availability & Quality Control:</strong> GorillaBand bands are
+                            currently in stock. To ensure every product is in perfect condition, we perform
+                            final structural inspection and careful packing before shipping.</p>
+                        <p><strong>Handling Duration:</strong> Orders are prepared and shipped within
+                            <strong>7 days (including weekends)</strong> of payment. In case of peak
+                            periods, holidays, or unexpected stock shortages, delays will be announced or
+                            emailed. Thank you for your patience.
+                        </p>
+
+                        <h3>2. Shipping Methods & Speed</h3>
+                        <p>Estimated transit times after package dispatch:</p>
+                        <ul>
+                            <li><strong>Convenience Store Pick-up (7-11 / FamilyMart):</strong> Arrives at
+                                store in 2 to 3 days. SMS alerts will be sent when ready. Please pick up
+                                before deadline.</li>
+                            <li><strong>Home Delivery:</strong> Arrives in 1 to 2 business days (except
+                                remote regions, subject to courier schedule).</li>
+                        </ul>
+
+                        <h3>3. Order Tracking</h3>
+                        <p>A dispatch notification with tracking details will be emailed automatically once
+                            shipped. Use the tracking number to check logistics status.</p>
+
+                        <h3>4. Undeliverable Shipments</h3>
+                        <p>If a parcel is returned due to incorrect recipient info or failure to pick it up
+                            on time, the buyer must pay additional shipping fees for re-delivery.</p>
+
+                        <h3>5. International Shipping</h3>
+                        <p>Direct checkout on GorillaBand is restricted to Taiwan. For international orders,
+                            please contact support to calculate custom shipping quotes.</p>
+                    </div>
+                </div>
+
+                <!-- 隱私權政策與服務條款 -->
+
+                <div class="policy-pane" id="pane-privacy" style="display: none;">
+                    <div lang="zh-TW">
+                        <h2>隱私權政策與服務條款</h2>
+
+                        <h3>【隱私權政策】</h3>
+
+                        <h4>1. 個人資料的蒐集與使用目的</h4>
+                        <p>當您於 GorillaBand
+                            官方網站進行註冊、商品結帳、訂閱電子報或使用客服系統時，我們會請您提供必要的個人資料（包含但不限於姓名、聯絡電話、電子郵件、收件地址等）。這些資料僅供本站用於訂單處理、物流寄送、帳務結算、售後服務及回覆您的詢問。未經您的明確同意，我們絕不會將您的個人資料洩漏、轉賣或提供給任何無關之第三方。
+                        </p>
+
+                        <h4>2. 第三方服務與物流合作</h4>
+                        <p>為確保能順利將 GorillaBand 產品送達您手中，我們必須將您的收件資訊（姓名、電話、地址或超商門市）提供給合作的物流業者（如
+                            7-11、全家或宅配公司）以及金流服務平台。上述合作夥伴僅能在處理您訂單的必要業務範圍內使用這些資料。</p>
+
+                        <h4>3. 資料安全防護</h4>
+                        <p>本網站主機均設有各項資訊安全設備及必要的安全防護措施，以保護網站及您的個人資料。您的個人資料採用嚴格的保護機制，防止未經授權的存取、竄改、揭露或毀損。</p>
+
+                        <h4>4. 您對個人資料的權利</h4>
+                        <p>依據《個人資料保護法》，您隨時有權向 GorillaBand
+                            請求查詢、閱覽、補充、更正或刪除屬於您的個人資料。若您希望停止接收我們的行銷信件或要求刪除會員資料，請透過官方客服信箱與我們聯繫，我們將盡速為您處理。</p>
+
+                        <h3>【服務條款】</h3>
+
+                        <h4>5. 網站使用規範與修改權利</h4>
+                        <p>您在使用本網站各項服務時，即表示您已閱讀、瞭解並同意接受本網站所有政策與條款之內容。GorillaBand
+                            保留隨時修改本網站圖文內容、商品售價、各項政策與服務條款之權利，修改後的內容將發布於網站上，恕不另行個別通知。</p>
+
+                        <h4>6. 訂單成立與拒絕權</h4>
+                        <p>當您完成結帳流程並收到系統自動發送的「訂單確認通知」時，即表示我們已收到您的訂購需求。但若因系統異常導致標價錯誤、庫存盤點誤差或其他不可抗力之因素導致無法順利出貨，GorillaBand
+                            保留最終決定是否接受該訂單及出貨之權利。若訂單無法成立，我們將主動與您聯繫，並協助辦理該筆訂單之全額退款。</p>
+                    </div>
+                    <div lang="en">
+                        <h2>Privacy Policy & Terms of Service</h2>
+
+                        <h3>【Privacy Policy】</h3>
+
+                        <h4>1. Data Collection & Use Purpose</h4>
+                        <p>When you register, checkout, subscribe, or contact support, we collect necessary
+                            personal details (name, phone, email, delivery address). This data is strictly
+                            used for order processing, deliveries, billing, support, and inquiries. We never
+                            disclose or sell your data to third parties without consent.</p>
+
+                        <h4>2. Third-Party Service & Logistics</h4>
+                        <p>To deliver your order, your details (name, phone, address, store ID) are shared
+                            with logistics partners (7-11, FamilyMart, couriers) and payment gateways, only
+                            to the extent required to execute your transaction.</p>
+
+                        <h4>3. Information Security</h4>
+                        <p>Our server employs firewall protections and secure protocols to protect your
+                            personal details from unauthorized access, modification, or leakage.</p>
+
+                        <h4>4. Your Rights</h4>
+                        <p>Under Personal Data Protection acts, you have the right to inspect, correct, or
+                            request deletion of your personal details. Contact support if you wish to
+                            opt-out of marketing lists or delete account credentials.</p>
+
+                        <h3>【Terms of Service】</h3>
+
+                        <h4>5. Terms of Site Usage</h4>
+                        <p>By browsing or purchasing from GorillaBand, you agree to all policies and terms
+                            listed. GorillaBand reserves the right to modify site content, prices, policies,
+                            and terms at any time without individual notices.</p>
+
+                        <h4>6. Order Acceptance & Refusal Rights</h4>
+                        <p>Completing checkout sends an automated receipt confirmation. However, if listing
+                            errors, inventory discrepancies, or unexpected supply issues occur, GorillaBand
+                            reserves the right to cancel the order. We will reach out and issue a full
+                            refund immediately.</p>
+                    </div>
+                </div>
+
+                <!-- 退換貨與退款政策 -->
+
+            </div>
+        </div>
+    </div>
+
+    <!-- 頁尾 (Footer) -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>GorillaBand</h3>
+                <p lang="zh-TW">GorillaBand 專為發燒友打造人體工學減壓升級配件，釋放單點壓迫，讓您的耳機重獲舒適新生。</p>
+                <p lang="en">GorillaBand crafts premium 3D-printed ergonomic decompression upgrades for audiophiles,
+                    dissolving pressure points to bring your favorite headphones back to comfortable life.</p>
+                <div class="footer-policy-links">
+                    <a href="#policy/copyright">
+                        <span lang="zh-TW">免責與版權聲明</span>
+                        <span lang="en">Disclaimer</span>
+                    </a>
+                    <a href="#policy/refund">
+                        <span lang="zh-TW">退換貨政策</span>
+                        <span lang="en">Refund Policy</span>
+                    </a>
+                    <a href="#policy/shipping">
+                        <span lang="zh-TW">運送政策</span>
+                        <span lang="en">Shipping Policy</span>
+                    </a>
+                    <a href="#policy/privacy">
+                        <span lang="zh-TW">隱私權政策</span>
+                        <span lang="en">Privacy Policy</span>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-links">
+                <h4 lang="zh-TW">官方銷售管道</h4>
+                <h4 lang="en">Official Sales Channels</h4>
+                <div class="footer-channel-buttons">
+                    <a href="https://myship.7-11.com.tw/general/detail/GM2603034998904?fbclid=IwY2xjawTDUjZleHRuA2FlbQIxMABicmlkETFPNHZIZzMyMWVwSEs5MHZDc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHoU8-9qhqSUaBkrR65l7JrvE2b_IOjwXtG_HXvhNvPVlXua-IH5EgNMNbwsT_aem_JxoqPWIF8bhWkzgryaybsw"
+                        target="_blank" class="footer-btn myship-btn">
+                        <span>7-11 賣貨便 (MyShip)</span>
+                    </a>
+                    <a href="https://shopee.tw/sotohoward1210?categoryId=100535&entryPoint=ShopByPDP&itemId=44178978684&fbclid=IwY2xjawTDNW9leHRuA2FlbQIxMABicmlkETFydWQ5dndmdFNVZm9wbTRFc3J0YwZhcHBfaWQQMjIyMDM5MTc4ODIwMDg5MgABHi9KTOLr5oBPyXCUQCwFDYWef00_W-s8lS9BsAhkn3z-Uk0nGjCZFwyV1-Jg_aem_H-MA_CJfILjA9pEgUhcE5Q"
+                        target="_blank" class="footer-btn shopee-btn">
+                        <span lang="zh-TW">蝦皮賣場 (Shopee)</span>
+                        <span lang="en">Shopee Store</span>
+                        <span class="shopee-note" lang="zh-TW">手續費價格稍高於一般通路</span>
+                        <span class="shopee-note" lang="en">higher fees on Shopee</span>
+                    </a>
+                    <a href="https://www.facebook.com/profile.php?id=61588065728797" target="_blank"
+                        class="footer-btn fb-btn">
+                        <span lang="zh-TW">Facebook 粉絲專頁</span>
+                        <span lang="en">Facebook Page</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="infra-badge" style="margin-bottom: 0;">
+                <span class="status-dot"></span>
+                <span>Hosted on Google Cloud Storage (GCS) by Soto</span>
+            </div>
+            <p>© 2026 GorillaBand. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- 品牌與商品資料庫 ---
+        const brandProducts = {
+            sennheiser: {
+                title: "Sennheiser 森海塞爾 減壓升級系列",
+                desc: "專為 Sennheiser 耳機設計的 3D 列印人體工學配件，完美減壓、透氣防熱。",
+                products: [
+                    {
+                        name: "HD800/800S/820耳機減壓頭帶",
+                        price: 400,
+                        img: "bg.png",
+                        desc: "旗艦級貼合曲線設計，加寬接觸面積，讓 HD800/800S/820 的配戴體驗更顯輕盈無重力。"
+                    },
+                    {
+                        name: "HD600系列 660S、660S2、650等同系耳機減壓頭帶",
+                        price: 400,
+                        img: "hd600_band.jpg",
+                        desc: "大猩猩工學中空減重孔位設計，完美釋放 HD600系列 660S、660S2、650 等同系耳機的單點壓迫感。"
+                    }
+                ]
+            },
+            grado: {
+                title: "Grado 系列減壓升級系列",
+                desc: "專為 Grado 復古金屬與木質發燒耳機打造，徹底解決原廠皮質細頭帶造成的頭頂壓迫問題。",
+                products: [
+                    {
+                        name: "Grado 系列專用減壓頭帶",
+                        price: 500,
+                        img: "grado_series.jpg",
+                        desc: "為 Grado 經典復古耳機量身打造之輕量化蜂巢式排汗減壓頭戴系統。"
+                    }
+                ]
+            },
+            sony: {
+                title: "Sony 索尼 減壓升級系列",
+                desc: "針對 Sony 高階耳機系列，升級配戴舒適感，延續您的專注與熱愛。",
+                products: [
+                    {
+                        name: "Sony Z7 / Z7M2 /MDR-Z1R 耳機專用減壓頭帶",
+                        price: 500,
+                        img: "SonyZ7.png",
+                        desc: "針對 Sony Z7 / Z7M2 / MDR-Z1R 等高階大耳罩耳機開發的釋壓分壓套件。"
+                    }
+                ]
+            },
+            audiotechnica: {
+                title: "Audio-Technica 鐵三角 減壓升級系列",
+                desc: "解決鐵三角高階空氣動圈耳機常見的配戴下垂或壓迫感，為您的聆聽續航力加分。",
+                products: [
+                    {
+                        name: "鐵三角 ADX5000/3000耳機專用減壓頭帶",
+                        price: 400,
+                        img: "adx5000.jpg",
+                        desc: "頂級 3D 列印精密中空釋壓結構，完全貼合頂部罩樑，打造日系極致配戴享受。"
+                    }
+                ]
+            },
+            tago: {
+                title: "TAGO Studio 減壓升級系列",
+                desc: "為日系職人木質監聽耳機 TAGO T3-01 / T3-03 設計的極致舒適配件，保留極簡質感，升級人體工學。",
+                products: [
+                    {
+                        name: "TAGO T3-01 / T3-03 耳機專用減壓頭帶",
+                        price: 400,
+                        img: "bg.png",
+                        desc: "專為 TAGO T3-01 及 T3-03 監聽耳機打造，採用 3D 精密減震釋壓結構，提升長時間工作配戴舒適度。"
+                    }
+                ]
+            },
+            beyerdynamic: {
+                title: "Beyerdynamic 拜耳 減壓升級系列",
+                desc: "德國拜耳經典 DT 系列耳機升級，加強分散頭樑鐵架壓力，讓金屬結構更具人體工學。",
+                products: [
+                    {
+                        name: "Beyerdynamic DT系列耳機專用紓壓頭帶",
+                        price: 400,
+                        img: "bg.png",
+                        desc: "適用於 DT770 / DT880 / DT990 等 DT 系列監聽耳機，全包裹釋壓設計，釋放單點硬物壓迫感。"
+                    }
+                ]
+            },
+            final: {
+                title: "Final 減壓升級系列",
+                desc: "針對 Final D/DX 系列高規平板耳機設計，透過力學結構最佳化，徹底化解重頭擔。",
+                products: [
+                    {
+                        name: "Final D DX系列耳機減壓頭帶",
+                        price: 500,
+                        img: "bg.png",
+                        desc: "專利網格力學結構，針對 Final D/DX 系列平板耳機設計，大幅分壓，配戴體驗重獲新生。"
+                    }
+                ]
+            },
+            audeze: {
+                title: "Audeze 減壓升級系列",
+                desc: "針對 Audeze LCD 系列重量級平板耳機設計，優化受力曲線與緩衝結構，顯著減輕頭頂單點壓迫負擔。",
+                products: [
+                    {
+                        name: "Audeze LCD系列替換頭梁",
+                        price: "尚未定價",
+                        img: "bg.png",
+                        desc: "專為 Audeze LCD 系列（LCD-2/LCD-3/LCD-4/LCD-X等）平板耳機設計之精密減壓替換頭樑套件。"
+                    }
+                ]
+            }
+        };
+
+        // --- 動態渲染品牌商品頁面 ---
+        function renderBrandProducts(brandKey) {
+            const data = brandProducts[brandKey];
+            if (!data) return;
+
+            document.getElementById('brand-page-title').textContent = data.title;
+            document.getElementById('brand-page-desc').textContent = data.desc;
+
+            const grid = document.getElementById('brand-products-grid');
+            grid.innerHTML = ''; // 清空舊內容
+
+            data.products.forEach(p => {
+                const card = document.createElement('div');
+                card.classList.add('product-card');
+
+                let imgHTML = '';
+                const availableImages = ['hd600_band.jpg', 'grado_series.jpg', 'adx5000.jpg', 'SonyZ7.png'];
+                if (availableImages.includes(p.img)) {
+                    imgHTML = `<img src="${p.img}" alt="${p.name}" class="product-image">`;
+                } else {
+                    const brandColors = {
+                        sennheiser: 'linear-gradient(135deg, #1f4068 0%, #162447 100%)',
+                        grado: 'linear-gradient(135deg, #e17055 0%, #d63031 100%)',
+                        audiotechnica: 'linear-gradient(135deg, #485563 0%, #29323c 100%)',
+                        sony: 'linear-gradient(135deg, #1f4068 0%, #162447 100%)',
+                        tago: 'linear-gradient(135deg, #100e17 0%, #322f3d 100%)',
+                        beyerdynamic: 'linear-gradient(135deg, #2d3436 0%, #000000 100%)',
+                        final: 'linear-gradient(135deg, #7f00ff 0%, #e100ff 100%)',
+                        audeze: 'linear-gradient(135deg, #00cec9 0%, #0984e3 100%)'
+                    };
+                    const gradient = brandColors[brandKey] || 'linear-gradient(135deg, #1a1a1a 0%, #444444 100%)';
+                    imgHTML = `
+                    <div class="brand-image-wrapper">
+                        <div class="brand-gradient-placeholder" style="background: ${gradient};">
+                            <span style="text-align:center; padding: 0 15px; font-weight:700;">GorillaBand Upgrade</span>
+                        </div>
+                    </div>
+                    `;
+                }
+
+                card.innerHTML = `
+                ${imgHTML}
+                <div class="product-info">
+                    <h2 class="product-title" style="min-height: 48px; text-align: left;">${p.name}</h2>
+                    <p class="brand-desc" style="min-height: 60px; margin: 10px 0 15px 0;">${p.desc}</p>
+                    <div style="display:flex; justify-content:center; align-items:center; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px;">
+                        <span class="price">${typeof p.price === 'number' ? 'NT$ ' + p.price : p.price}</span>
+                    </div>
+                </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- 頁面切換與路由 (SPA Toggling & Hash Routing) ---
+        const btnHome = document.getElementById('btn-home');
+        const btnAbout = document.getElementById('btn-about');
+        const logoLink = document.getElementById('logo-link');
+        const btnBackToBrands = document.getElementById('btn-back-to-brands');
+
+        const sectionHero = document.querySelector('.hero');
+        const sectionBrandGrid = document.getElementById('brand-grid');
+        const sectionBrandView = document.getElementById('brand-view-section');
+        const sectionAbout = document.getElementById('about-section');
+        const sectionPolicy = document.getElementById('policy-section');
+
+        function showPage(page, key = null) {
+            // 重設所有導航 active 狀態
+            btnHome.classList.remove('active');
+            btnAbout.classList.remove('active');
+
+            if (page === 'about') {
+                sectionHero.style.display = 'none';
+                sectionBrandGrid.style.display = 'none';
+                sectionBrandView.style.display = 'none';
+                sectionAbout.style.display = 'block';
+                sectionPolicy.style.display = 'none';
+
+                btnAbout.classList.add('active');
+                window.location.hash = 'about';
+            } else if (page === 'brand' && key) {
+                renderBrandProducts(key);
+
+                sectionHero.style.display = 'flex';
+                sectionBrandGrid.style.display = 'none';
+                sectionBrandView.style.display = 'block';
+                sectionAbout.style.display = 'none';
+                sectionPolicy.style.display = 'none';
+
+                window.location.hash = `brand/${key}`;
+            } else if (page === 'policy') {
+                const activeTab = key || 'copyright';
+
+                sectionHero.style.display = 'none';
+                sectionBrandGrid.style.display = 'none';
+                sectionBrandView.style.display = 'none';
+                sectionAbout.style.display = 'none';
+                sectionPolicy.style.display = 'block';
+
+                // 切換條款標籤按鈕狀態
+                document.querySelectorAll('.policy-tab-btn').forEach(btn => {
+                    if (btn.getAttribute('data-tab') === activeTab) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                });
+
+                // 顯示對應面板
+                document.querySelectorAll('.policy-pane').forEach(pane => {
+                    if (pane.id === `pane-${activeTab}`) {
+                        pane.style.display = 'block';
+                    } else {
+                        pane.style.display = 'none';
+                    }
+                });
+
+                window.location.hash = `policy/${activeTab}`;
+            } else {
+                // 預設首頁 (顯示品牌分類)
+                sectionHero.style.display = 'flex';
+                sectionBrandGrid.style.display = 'grid';
+                sectionBrandView.style.display = 'none';
+                sectionAbout.style.display = 'none';
+                sectionPolicy.style.display = 'none';
+
+                btnHome.classList.add('active');
+                window.location.hash = 'home';
+            }
+            // 平滑滾動至頂部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- 事件監聽器 (Event Listeners) ---
+        btnHome.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('home');
+        });
+
+        btnAbout.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('about');
+        });
+
+        logoLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('home');
+        });
+
+        btnBackToBrands.addEventListener('click', () => {
+            showPage('home');
+        });
+
+        document.getElementById('btn-policy-back').addEventListener('click', () => {
+            showPage('home');
+        });
+
+        // 條款與政策邊欄分頁按鈕點擊事件
+        document.querySelectorAll('.policy-tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.getAttribute('data-tab');
+                showPage('policy', tab);
+            });
+        });
+
+        // 首頁品牌分類卡片點擊事件
+        document.querySelectorAll('.brand-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const brand = card.getAttribute('data-brand');
+                showPage('brand', brand);
+            });
+        });
+
+        // 導航下拉選單品牌點擊事件
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                const brand = item.getAttribute('data-brand');
+                showPage('brand', brand);
+            });
+        });
+
+        // --- 玻璃波紋效果與滑鼠移動微光 ---
+        const heroGlass = document.getElementById('hero-glass');
+        if (heroGlass) {
+            const glassContent = heroGlass.querySelector('.glass-content');
+
+            heroGlass.addEventListener('click', function (e) {
+                const rect = heroGlass.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                const ripple = document.createElement('div');
+                ripple.classList.add('glass-ripple', 'shockwave');
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+
+                heroGlass.appendChild(ripple);
+
+                ripple.addEventListener('animationend', () => {
+                    ripple.remove();
+                });
+            });
+
+            heroGlass.addEventListener('mousemove', function (e) {
+                const rect = heroGlass.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                heroGlass.style.setProperty('--mouse-x', x + 'px');
+                heroGlass.style.setProperty('--mouse-y', y + 'px');
+
+                // Interactive 3D Tilt Effect
+                const width = rect.width;
+                const height = rect.height;
+                const centerX = width / 2;
+                const centerY = height / 2;
+
+                // Tilt range: -8 degrees to +8 degrees
+                const rotateX = ((centerY - y) / centerY) * 8;
+                const rotateY = ((x - centerX) / centerX) * 8;
+
+                if (glassContent) {
+                    glassContent.style.transform = 'rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg)';
+                }
+            });
+
+            heroGlass.addEventListener('mouseleave', function () {
+                if (glassContent) {
+                    glassContent.style.transform = 'rotateX(0deg) rotateY(0deg)';
+                }
+            });
+        }
+
+        // 路由解析
+        function handleHashRoute() {
+            const hash = window.location.hash;
+            if (hash === '#about') {
+                showPage('about');
+            } else if (hash.startsWith('#brand/')) {
+                const brandKey = hash.split('/')[1];
+                if (brandProducts[brandKey]) {
+                    showPage('brand', brandKey);
+                } else {
+                    showPage('home');
+                }
+            } else if (hash.startsWith('#policy/')) {
+                const tab = hash.split('/')[1];
+                showPage('policy', tab);
+            } else {
+                showPage('home');
+            }
+        }
+
+        window.addEventListener('load', handleHashRoute);
+        window.addEventListener('hashchange', handleHashRoute);
+    </script>
+
+    <!-- 黑夜/一般模式切換懸浮按鈕 (Floating Theme Toggle Button) -->
+    <button class="theme-toggle-btn" id="themeToggleBtn" title="切換深色/淺色模式" aria-label="切換深色/淺色模式">
+        <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <!-- 月亮圖示 (預設淺色模式下顯示) -->
+            <path id="themeIconPath" d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" />
+        </svg>
+    </button>
+
+    <script>
+        (function () {
+            const htmlEl = document.documentElement;
+            const btn = document.getElementById('themeToggleBtn');
+            const iconPath = document.getElementById('themeIconPath');
+
+            const MOON_PATH = "M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z";
+            const SUN_PATH = "M12 3a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0V4a1 1 0 0 1 1-1zm0 15a1 1 0 0 1 1 1v1a1 1 0 1 1-2 0v-1a1 1 0 0 1 1-1zm9-9a1 1 0 1 1 0 2h-1a1 1 0 1 1 0-2h1zM4 11a1 1 0 1 1 0 2H3a1 1 0 1 1 0-2h1zm14.95 6.364a1 1 0 0 1-1.414 1.414l-.707-.707a1 1 0 0 1 1.414-1.414l.707.707zM6.172 6.172a1 1 0 0 1-1.414 1.414l-.707-.707A1 1 0 0 1 5.465 5.465l.707.707zm12.02 0 .707-.707a1 1 0 0 1 1.414 1.414l-.707.707a1 1 0 0 1-1.414-1.414zM5.465 18.535l-.707.707A1 1 0 0 1 3.344 17.828l.707-.707a1 1 0 0 1 1.414 1.414zM12 7a5 5 0 1 0 0 10A5 5 0 0 0 12 7z";
+
+            // 讀取已儲存的主題偏好
+            const savedTheme = localStorage.getItem('gorillabandTheme');
+            if (savedTheme === 'dark') {
+                htmlEl.setAttribute('data-theme', 'dark');
+                iconPath.setAttribute('d', SUN_PATH);
+            } else {
+                htmlEl.removeAttribute('data-theme');
+                iconPath.setAttribute('d', MOON_PATH);
+            }
+
+            btn.addEventListener('click', function () {
+                const isDark = htmlEl.getAttribute('data-theme') === 'dark';
+                if (isDark) {
+                    // 切換回淺色模式
+                    htmlEl.removeAttribute('data-theme');
+                    iconPath.setAttribute('d', MOON_PATH);
+                    localStorage.setItem('gorillabandTheme', 'light');
+                } else {
+                    // 切換至深色模式
+                    htmlEl.setAttribute('data-theme', 'dark');
+                    iconPath.setAttribute('d', SUN_PATH);
+                    localStorage.setItem('gorillabandTheme', 'dark');
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>
