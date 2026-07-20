@@ -1500,10 +1500,7 @@
 
         <div class="product-card brand-card" data-brand="tago">
             <div class="brand-image-wrapper">
-                <div class="brand-gradient-placeholder"
-                    style="background: linear-gradient(135deg, #100e17 0%, #322f3d 100%);">
-                    <span>TAGO</span>
-                </div>
+                <img src="TAGO301.png" alt="TAGO T3-01" class="product-image">
                 <div class="brand-overlay"></div>
             </div>
             <div class="product-info">
@@ -1518,10 +1515,7 @@
 
         <div class="product-card brand-card" data-brand="beyerdynamic">
             <div class="brand-image-wrapper">
-                <div class="brand-gradient-placeholder"
-                    style="background: linear-gradient(135deg, #2d3436 0%, #000000 100%);">
-                    <span>BEYERDYNAMIC</span>
-                </div>
+                <img src="Beyerdynamic.png" alt="Beyerdynamic DT Series" class="product-image">
                 <div class="brand-overlay"></div>
             </div>
             <div class="product-info">
@@ -1537,10 +1531,7 @@
 
         <div class="product-card brand-card" data-brand="final">
             <div class="brand-image-wrapper">
-                <div class="brand-gradient-placeholder"
-                    style="background: linear-gradient(135deg, #7f00ff 0%, #e100ff 100%);">
-                    <span>FINAL</span>
-                </div>
+                <img src="Final.png" alt="Final D DX Series" class="product-image">
                 <div class="brand-overlay"></div>
             </div>
             <div class="product-info">
@@ -1555,10 +1546,7 @@
 
         <div class="product-card brand-card" data-brand="audeze">
             <div class="brand-image-wrapper">
-                <div class="brand-gradient-placeholder"
-                    style="background: linear-gradient(135deg, #00cec9 0%, #0984e3 100%);">
-                    <span>AUDEZE</span>
-                </div>
+                <img src="Audeze.png" alt="Audeze LCD Series" class="product-image">
                 <div class="brand-overlay"></div>
             </div>
             <div class="product-info">
@@ -2101,7 +2089,7 @@
                     {
                         name: "TAGO T3-01 / T3-03 耳機專用減壓頭帶",
                         price: 400,
-                        img: "bg.png",
+                        img: "TAGO301.png",
                         desc: "專為 TAGO T3-01 及 T3-03 監聽耳機打造，採用 3D 精密減震釋壓結構，提升長時間工作配戴舒適度。"
                     }
                 ]
@@ -2113,7 +2101,7 @@
                     {
                         name: "Beyerdynamic DT系列耳機專用紓壓頭帶",
                         price: 400,
-                        img: "bg.png",
+                        img: "Beyerdynamic.png",
                         desc: "適用於 DT770 / DT880 / DT990 等 DT 系列監聽耳機，全包裹釋壓設計，釋放單點硬物壓迫感。"
                     }
                 ]
@@ -2125,7 +2113,7 @@
                     {
                         name: "Final D DX系列耳機減壓頭帶",
                         price: 500,
-                        img: "bg.png",
+                        img: "Final.png",
                         desc: "專利網格力學結構，針對 Final D/DX 系列平板耳機設計，大幅分壓，配戴體驗重獲新生。"
                     }
                 ]
@@ -2137,7 +2125,7 @@
                     {
                         name: "Audeze LCD系列替換頭梁",
                         price: "尚未定價",
-                        img: "bg.png",
+                        img: "Audeze.png",
                         desc: "專為 Audeze LCD 系列（LCD-2/LCD-3/LCD-4/LCD-X等）平板耳機設計之精密減壓替換頭樑套件。"
                     }
                 ]
@@ -2160,7 +2148,7 @@
                 card.classList.add('product-card');
 
                 let imgHTML = '';
-                const availableImages = ['hd600_band.jpg', 'grado_series.jpg', 'adx5000.jpg', 'SonyZ7.png', 'HD800.png'];
+                const availableImages = ['hd600_band.jpg', 'grado_series.jpg', 'adx5000.jpg', 'SonyZ7.png', 'HD800.png', 'TAGO301.png', 'Beyerdynamic.png', 'Final.png', 'Audeze.png'];
                 if (availableImages.includes(p.img)) {
                     imgHTML = `<img src="${p.img}" alt="${p.name}" class="product-image">`;
                 } else {
