@@ -30,8 +30,5 @@ jobs:
             --cache-control="no-cache, max-age=0"
 
       - name: 'Deploy to Firebase Hosting'
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          channelId: 'live'
-          projectId: 'project-9272ed72-1204-49af-a85'
+        run: |
+          npx firebase-tools deploy --only hosting --project project-9272ed72-1204-49af-a85 --non-interactive
